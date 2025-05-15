@@ -1,7 +1,7 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
 import { db } from "../../db/db";
-import Task from "./Task";
+import Column from "./Column";
 
 const Kanban: React.FC = () => {
   const todoTasks = useLiveQuery(async () => {
@@ -28,24 +28,13 @@ const Kanban: React.FC = () => {
   return (
     <main className="flex-grow flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-4xl grid grid-cols-3 gap-6">
-        <div className="bg-white rounded shadow p-4 min-h-[400px] flex flex-col gap-4">
-          <h2 className="font-bold mb-4">To Do</h2>
-          {todoTasks?.map((task) => (
-            <Task key={task.id} task={task} />
-          ))}
-        </div>
-        <div className="bg-white rounded shadow p-4 min-h-[400px] flex flex-col gap-4">
-          <h2 className="font-bold mb-4">In Progress</h2>
-          {inProgressTasks?.map((task) => (
-            <Task key={task.id} task={task} />
-          ))}
-        </div>
-        <div className="bg-white rounded shadow p-4 min-h-[400px] flex flex-col gap-4">
-          <h2 className="font-bold mb-4">Done</h2>
-          {doneTasks?.map((task) => (
-            <Task key={task.id} task={task} />
-          ))}
-        </div>
+        <Column tasks={todoTasks ?? []} title="To Do" status="todo" />
+        <Column
+          tasks={inProgressTasks ?? []}
+          title="In Progress"
+          status="in-progress"
+        />
+        <Column tasks={doneTasks ?? []} title="Done" status="done" />
       </div>
     </main>
   );

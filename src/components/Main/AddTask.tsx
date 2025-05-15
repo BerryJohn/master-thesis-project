@@ -36,7 +36,6 @@ const AddTask: React.FC<AddTaskProps> = ({ isOpen, handleClose }) => {
         updatedAt: new Date(),
         assignedTo,
       });
-      console.log(`Task ${title} successfully added. Got id ${id}`);
     } catch (error) {
       console.error(`Failed to add ${title}: ${error}`);
     }
