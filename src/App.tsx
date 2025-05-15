@@ -1,10 +1,15 @@
 import "./App.css";
+import Footer from "./components/Footer";
+import Kanban from "./components/Main/Kanban";
+import TopBar from "./components/TopBar";
 
 function App() {
   return (
-    <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 drop-shadow-lg text-center mt-20">
-      Hello world!
-    </h1>
+    <div className="flex flex-col min-h-screen">
+      <TopBar />
+      <Kanban />
+      <Footer />
+    </div>
   );
 }
 
