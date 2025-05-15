@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import AddTask from "./Main/AddTask";
 
-const TopBar: React.FC = () => {
+const TopBar = ({ openAddTask }: { openAddTask(): void }) => {
   const [online, setOnline] = useState(false);
 
   return (
@@ -25,6 +26,12 @@ const TopBar: React.FC = () => {
             aria-pressed={online}
           >
             {online ? "Online" : "Offline"}
+          </button>
+          <button
+            className="bg-blue-600 text-white rounded px-4 py-2 hover:bg-blue-700 transition"
+            onClick={openAddTask}
+          >
+            Add Task
           </button>
         </div>
       </div>
