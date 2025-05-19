@@ -12,6 +12,10 @@ export type KanbanTask = {
   assignedTo: string;
 };
 
+export type TasksList = {
+  tasks: KanbanTask[];
+};
+
 const db = new Dexie("KanbanDB") as Dexie & {
   tasks: EntityTable<
     KanbanTask,

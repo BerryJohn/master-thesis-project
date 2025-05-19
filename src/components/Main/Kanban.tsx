@@ -1,9 +1,28 @@
+"use client";
 import { useLiveQuery } from "dexie-react-hooks";
-import React from "react";
-import { db } from "../../db/db";
+import { db, type KanbanTask, type TasksList } from "../../db/db";
 import Column from "./Column";
+import { useDocument, type AutomergeUrl } from "@automerge/react";
+// import { repo } from "../../main";
 
-const Kanban: React.FC = () => {
+// const listHandle = repo.create<{ tasks: KanbanTask[] }>({
+//   tasks: [
+//     {
+//       id: 1,
+//       title: "Task 1",
+//       description: "Description for Task 1",
+//       status: "todo",
+//       priority: "high",
+//       createdAt: new Date(),
+//       updatedAt: new Date(),
+//       assignedTo: "User 1",
+//     },
+//   ],
+// });
+
+const Kanban = ({ docUrl }: { docUrl: AutomergeUrl }) => {
+  const [doc, changeDoc] = useDocument<TasksList>(docUrl);
+
   const todoTasks = useLiveQuery(async () => {
     const tasks = await db.tasks.where("status").equals("todo").toArray();
 
@@ -24,6 +43,46 @@ const Kanban: React.FC = () => {
 
     return tasks;
   }, []);
+
+  // if (!doc) return <div>Loading...</div>;
+
+  // Now we can get the tasks out of the document and render them below.
+  // const { tasks } = doc;
+
+  if (doc?.tasks) {
+    return (
+      <div className="flex flex-grow flex-col items-center justify-center">
+        {doc.tasks.map((task) => (
+          <div key={task.id} className="p-4 border rounded mb-4">
+            <h2 className="text-lg font-bold">{task.title}</h2>
+            <p>{task.description}</p>
+            <p>Status: {task.status}</p>
+            <p>Priority: {task.priority}</p>
+            <p>Assigned to: {task.assignedTo}</p>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={() => {
+            changeDoc((d) =>
+              d.tasks.unshift({
+                title: "",
+                description: "",
+                status: "todo",
+                priority: "low",
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                assignedTo: "",
+                id: Math.floor(Math.random() * 1000000),
+              })
+            );
+          }}
+        >
+          add
+        </button>
+      </div>
+    );
+  }
 
   return (
     <main className="flex-grow flex items-center justify-center bg-gray-100">
