@@ -2,19 +2,20 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
-
 import {
   Repo,
-  BroadcastChannelNetworkAdapter,
+  // BroadcastChannelNetworkAdapter,
   IndexedDBStorageAdapter,
   RepoContext,
   isValidAutomergeUrl,
 } from "@automerge/react";
 import type { TasksList } from "./db/db.ts";
+import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network-websocket";
 
 export const repo = new Repo({
   storage: new IndexedDBStorageAdapter(),
-  network: [new BroadcastChannelNetworkAdapter()],
+
+  network: [new BrowserWebSocketClientAdapter("ws://localhost:3030")],
 });
 
 const locationHash = document.location.hash.substring(1);

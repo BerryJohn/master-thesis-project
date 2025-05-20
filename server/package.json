@@ -1,0 +1,17 @@
+{
+  "name": "master-thesis-local-first-server",
+  "version": "1.0.0",
+  "description": "A server for my master-thesis project, a simple WSS server to sync over browsers using automerge (CRDT)",
+  "license": "ISC",
+  "author": "Jan Bak",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@automerge/automerge-repo-network-websocket": "^2.0.0",
+    "express": "^5.1.0",
+    "ws": "^8.18.2"
+  }
+}
