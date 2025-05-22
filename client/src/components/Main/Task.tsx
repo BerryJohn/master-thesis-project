@@ -1,9 +1,10 @@
-import type { KanbanTask } from "../../db/db";
+import type { KanbanTask } from "../../types/kanban";
 import { useDrag, type DragSourceMonitor } from "react-dnd";
 
 type TaskProps = {
   task: KanbanTask;
   handleOpenEditTask: (id: number) => void;
+  deleteTask: (id: number) => void;
 };
 
 const statusColors: Record<KanbanTask["status"], string> = {
@@ -18,7 +19,7 @@ const priorityColors: Record<NonNullable<KanbanTask["priority"]>, string> = {
   high: "bg-red-100 text-red-700",
 };
 
-export const Task = ({ task, handleOpenEditTask }: TaskProps) => {
+export const Task = ({ task, handleOpenEditTask, deleteTask }: TaskProps) => {
   const [{ opacity }, drag] = useDrag(
     () => ({
       type: "task",
@@ -51,15 +52,26 @@ export const Task = ({ task, handleOpenEditTask }: TaskProps) => {
             </p>
           )}
         </div>
-        <button
-          className="ml-2 px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-          onClick={() => {
-            handleOpenEditTask(task.id);
-          }}
-          title="Edit Task"
-        >
-          Edit
-        </button>
+        <div className="flex flex-col gap-1 ml-2">
+          <button
+            className="px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+            onClick={() => {
+              handleOpenEditTask(task.id);
+            }}
+            title="Edit Task"
+          >
+            Edit
+          </button>
+          <button
+            className="mt-1 px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600 transition"
+            onClick={() => {
+              deleteTask(task.id);
+            }}
+            title="Delete task"
+          >
+            Delete
+          </button>
+        </div>
       </div>
       <div className="flex items-center  mt-2 flex-wrap gap-2">
         <span

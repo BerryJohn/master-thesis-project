@@ -1,5 +1,5 @@
 import React from "react";
-import type { TasksList } from "../../db/db";
+import type { Piority, Status, TasksList } from "../../types/kanban";
 import { useDocument, type AutomergeUrl } from "@automerge/react";
 
 interface AddTaskProps {
@@ -20,10 +20,8 @@ const AddTask = ({ isOpen, handleClose, docUrl }: AddTaskProps) => {
     e.preventDefault();
     const title = titleRef.current?.value.trim() || "";
     const description = descriptionRef.current?.value || "";
-    const status =
-      (statusRef.current?.value as "todo" | "in-progress" | "done") || "todo";
-    const priority =
-      (priorityRef.current?.value as "low" | "medium" | "high") || "medium";
+    const status = (statusRef.current?.value as Status) || "todo";
+    const priority = (priorityRef.current?.value as Piority) || "medium";
     if (!title) return;
 
     addTask(title, description, status, priority);
@@ -39,8 +37,8 @@ const AddTask = ({ isOpen, handleClose, docUrl }: AddTaskProps) => {
   const addTask = (
     title: string,
     description: string,
-    status: "todo" | "in-progress" | "done",
-    priority: "low" | "medium" | "high"
+    status: Status,
+    priority: Piority
   ) => {
     changeDoc((d) => {
       d.tasks.push({
@@ -58,8 +56,14 @@ const AddTask = ({ isOpen, handleClose, docUrl }: AddTaskProps) => {
   return (
     <>
       {isOpen && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 z-50">
-          <div className="bg-white p-6 rounded shadow-md flex flex-col gap-4 max-w-md w-full relative">
+        <div
+          className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 z-50"
+          onClick={handleClose}
+        >
+          <div
+            className="bg-white p-6 rounded shadow-md flex flex-col gap-4 max-w-md w-full relative"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
               onClick={handleClose}

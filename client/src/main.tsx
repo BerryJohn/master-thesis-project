@@ -8,7 +8,7 @@ import {
   RepoContext,
   isValidAutomergeUrl,
 } from "@automerge/react";
-import type { TasksList } from "./db/db.ts";
+import type { TasksList } from "./types/kanban.ts";
 import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network-websocket";
 
 export const repo = new Repo({

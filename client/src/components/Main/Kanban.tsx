@@ -1,4 +1,4 @@
-import { type TasksList } from "../../db/db";
+import { type TasksList } from "../../types/kanban";
 import Column from "./Column";
 import { useDocument, type AutomergeUrl } from "@automerge/react";
 

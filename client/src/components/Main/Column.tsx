@@ -1,5 +1,9 @@
 import { useDocument, type AutomergeUrl } from "@automerge/react";
-import { type KanbanTask, type Status, type TasksList } from "../../db/db";
+import {
+  type KanbanTask,
+  type Status,
+  type TasksList,
+} from "../../types/kanban";
 import Task from "./Task";
 import { useDrop } from "react-dnd";
 
@@ -30,6 +34,15 @@ const Column = ({
     });
   };
 
+  const deleteTask = (taskId: number) => {
+    changeDoc((d) => {
+      const taskIndex = d.tasks.findIndex((task) => task.id === taskId);
+      if (taskIndex !== -1) {
+        d.tasks.splice(taskIndex, 1);
+      }
+    });
+  };
+
   const [, drop] = useDrop(() => ({
     accept: "task",
     drop: (droppedTodo: any) => {
@@ -52,6 +65,7 @@ const Column = ({
           key={task.id}
           task={task}
           handleOpenEditTask={handleOpenEditTask}
+          deleteTask={deleteTask}
         />
       ))}
     </div>
