@@ -3,6 +3,7 @@ import { useDrag, type DragSourceMonitor } from "react-dnd";
 
 type TaskProps = {
   task: KanbanTask;
+  handleOpenEditTask: (id: number) => void;
 };
 
 const statusColors: Record<KanbanTask["status"], string> = {
@@ -17,7 +18,7 @@ const priorityColors: Record<NonNullable<KanbanTask["priority"]>, string> = {
   high: "bg-red-100 text-red-700",
 };
 
-export const Task = ({ task }: TaskProps) => {
+export const Task = ({ task, handleOpenEditTask }: TaskProps) => {
   const [{ opacity }, drag] = useDrag(
     () => ({
       type: "task",
@@ -36,24 +37,31 @@ export const Task = ({ task }: TaskProps) => {
       className="rounded-lg shadow-md bg-white p-4 flex flex-col gap-3 border hover:shadow-lg transition-shadow"
     >
       <div className="flex items-start justify-between">
-        <div className="flex flex-col gap-1">
-          <span className="font-semibold text-lg">{task.title}</span>
+        <div className="flex flex-col gap-1 min-w-0">
+          <span className="font-semibold text-lg break-words">
+            {task.title}
+          </span>
           {task.description && (
-            <p className="text-gray-600 text-sm">{task.description}</p>
+            <p
+              className="text-gray-600 text-sm max-h-20 overflow-y-auto break-words whitespace-pre-line"
+              style={{ wordBreak: "break-word" }}
+              title={task.description}
+            >
+              {task.description}
+            </p>
           )}
         </div>
         <button
           className="ml-2 px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition"
           onClick={() => {
-            // TODO: Implement edit logic
-            alert("Edit task feature coming soon!");
+            handleOpenEditTask(task.id);
           }}
           title="Edit Task"
         >
           Edit
         </button>
       </div>
-      <div className="flex items-center justify-between mt-2">
+      <div className="flex items-center  mt-2 flex-wrap gap-2">
         <span
           className={`text-xs px-2 py-1 rounded ${statusColors[task.status]}`}
         >

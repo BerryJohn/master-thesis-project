@@ -8,9 +8,16 @@ type ColumnProps = {
   title: string;
   status: "todo" | "in-progress" | "done";
   docUrl: AutomergeUrl;
+  handleOpenEditTask: (id: number) => void;
 };
 
-const Column = ({ tasks, title, status, docUrl }: ColumnProps) => {
+const Column = ({
+  tasks,
+  title,
+  status,
+  docUrl,
+  handleOpenEditTask,
+}: ColumnProps) => {
   const [, changeDoc] = useDocument<TasksList>(docUrl);
 
   const updateTaskStatus = (taskId: number, newStatus: Status) => {
@@ -41,7 +48,11 @@ const Column = ({ tasks, title, status, docUrl }: ColumnProps) => {
     >
       <h2 className="font-bold mb-4">{title}</h2>
       {tasks?.map((task) => (
-        <Task key={task.id} task={task} />
+        <Task
+          key={task.id}
+          task={task}
+          handleOpenEditTask={handleOpenEditTask}
+        />
       ))}
     </div>
   );

@@ -2,19 +2,27 @@ import { Suspense, useState } from "react";
 import Footer from "./components/Footer";
 import Kanban from "./components/Main/Kanban";
 import TopBar from "./components/TopBar";
-import AddTask from "./components/Main/AddTask";
+import AddTask from "./components/dialogs/AddTask";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
 import type { AutomergeUrl } from "@automerge/react";
+import EditTask from "./components/dialogs/EditTask";
 
 const App = ({ docUrl }: { docUrl: AutomergeUrl }) => {
   const [openAddTask, setOpenAddTask] = useState(false);
+  const [openEditTask, setOpenEditTask] = useState(false);
+  const [taskId, setTaskId] = useState<number | null>(null);
 
   const handleOpenAddTask = () => {
     setOpenAddTask(true);
   };
   const handleCloseAddTask = () => {
     setOpenAddTask(false);
+  };
+
+  const handleOpenEditTask = (id: number) => {
+    setTaskId(id);
+    setOpenEditTask(true);
   };
 
   return (
@@ -28,7 +36,9 @@ const App = ({ docUrl }: { docUrl: AutomergeUrl }) => {
             </div>
           }
         >
-          {docUrl && <Kanban docUrl={docUrl} />}
+          {docUrl && (
+            <Kanban docUrl={docUrl} handleOpenEditTask={handleOpenEditTask} />
+          )}
         </Suspense>
       </DndProvider>
       <Footer />
@@ -36,6 +46,12 @@ const App = ({ docUrl }: { docUrl: AutomergeUrl }) => {
         isOpen={openAddTask}
         handleClose={handleCloseAddTask}
         docUrl={docUrl}
+      />
+      <EditTask
+        isOpen={openEditTask}
+        handleClose={() => setOpenEditTask(false)}
+        docUrl={docUrl}
+        taskId={taskId}
       />
     </div>
   );

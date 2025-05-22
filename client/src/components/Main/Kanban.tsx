@@ -2,7 +2,12 @@ import { type TasksList } from "../../db/db";
 import Column from "./Column";
 import { useDocument, type AutomergeUrl } from "@automerge/react";
 
-const Kanban = ({ docUrl }: { docUrl: AutomergeUrl }) => {
+type KanbanProps = {
+  docUrl: AutomergeUrl;
+  handleOpenEditTask: (id: number) => void;
+};
+
+const Kanban = ({ docUrl, handleOpenEditTask }: KanbanProps) => {
   const [doc] = useDocument<TasksList>(docUrl);
 
   return (
@@ -13,18 +18,21 @@ const Kanban = ({ docUrl }: { docUrl: AutomergeUrl }) => {
           title="To Do"
           status="todo"
           docUrl={docUrl}
+          handleOpenEditTask={handleOpenEditTask}
         />
         <Column
           tasks={doc?.tasks.filter((el) => el.status === "in-progress") ?? []}
           title="In Progress"
           status="in-progress"
           docUrl={docUrl}
+          handleOpenEditTask={handleOpenEditTask}
         />
         <Column
           tasks={doc?.tasks.filter((el) => el.status === "done") ?? []}
           title="Done"
           status="done"
           docUrl={docUrl}
+          handleOpenEditTask={handleOpenEditTask}
         />
       </div>
     </main>
