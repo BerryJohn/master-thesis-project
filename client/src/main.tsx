@@ -4,7 +4,6 @@ import "./index.css";
 import App from "./App.tsx";
 import {
   Repo,
-  // BroadcastChannelNetworkAdapter,
   IndexedDBStorageAdapter,
   RepoContext,
   isValidAutomergeUrl,

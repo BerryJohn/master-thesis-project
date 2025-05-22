@@ -1,44 +1,58 @@
-import React, { useState } from "react";
-import { db } from "../../db/db";
+import React from "react";
+import type { TasksList } from "../../db/db";
+import { useDocument, type AutomergeUrl } from "@automerge/react";
 
 interface AddTaskProps {
   isOpen: boolean;
   handleClose: () => void;
+  docUrl: AutomergeUrl;
 }
 
-const AddTask: React.FC<AddTaskProps> = ({ isOpen, handleClose }) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, setStatus] = useState<"todo" | "in-progress" | "done">("todo");
-  const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
-  const [assignedTo, setAssignedTo] = useState("");
+const AddTask = ({ isOpen, handleClose, docUrl }: AddTaskProps) => {
+  const titleRef = React.useRef<HTMLInputElement>(null);
+  const descriptionRef = React.useRef<HTMLTextAreaElement>(null);
+  const statusRef = React.useRef<HTMLSelectElement>(null);
+  const priorityRef = React.useRef<HTMLSelectElement>(null);
+
+  const [, changeDoc] = useDocument<TasksList>(docUrl);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim()) return;
-    addTask();
-    setTitle("");
-    setDescription("");
-    setStatus("todo");
-    setPriority("medium");
-    setAssignedTo("");
+    const title = titleRef.current?.value.trim() || "";
+    const description = descriptionRef.current?.value || "";
+    const status =
+      (statusRef.current?.value as "todo" | "in-progress" | "done") || "todo";
+    const priority =
+      (priorityRef.current?.value as "low" | "medium" | "high") || "medium";
+    if (!title) return;
+
+    addTask(title, description, status, priority);
+
+    titleRef.current && (titleRef.current.value = "");
+    descriptionRef.current && (descriptionRef.current.value = "");
+    statusRef.current && (statusRef.current.value = "todo");
+    priorityRef.current && (priorityRef.current.value = "medium");
+
     handleClose();
   };
 
-  const addTask = async () => {
-    try {
-      const id = await db.tasks.add({
+  const addTask = (
+    title: string,
+    description: string,
+    status: "todo" | "in-progress" | "done",
+    priority: "low" | "medium" | "high"
+  ) => {
+    changeDoc((d) => {
+      d.tasks.push({
+        id: Date.now(),
         title,
         description,
         status,
         priority,
         createdAt: new Date(),
-        updatedAt: new Date(),
-        assignedTo,
+        lastUpdate: new Date(),
       });
-    } catch (error) {
-      console.error(`Failed to add ${title}: ${error}`);
-    }
+    });
   };
 
   return (
@@ -55,29 +69,27 @@ const AddTask: React.FC<AddTaskProps> = ({ isOpen, handleClose }) => {
               &times;
             </button>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <h2 className="text-xl font-semibold mb-2">Add Kanban Task</h2>
+              <h2 className="text-xl font-semibold mb-2">Add task</h2>
               <input
                 type="text"
                 className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="Task Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Title"
+                ref={titleRef}
                 required
+                defaultValue=""
               />
               <textarea
                 className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="Task Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Description"
+                ref={descriptionRef}
                 rows={3}
+                defaultValue=""
               />
               <select
                 className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                value={status}
-                onChange={(e) =>
-                  setStatus(e.target.value as "todo" | "in-progress" | "done")
-                }
+                ref={statusRef}
                 required
+                defaultValue="todo"
               >
                 <option value="todo">To Do</option>
                 <option value="in-progress">In Progress</option>
@@ -85,28 +97,20 @@ const AddTask: React.FC<AddTaskProps> = ({ isOpen, handleClose }) => {
               </select>
               <select
                 className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                value={priority}
-                onChange={(e) =>
-                  setPriority(e.target.value as "low" | "medium" | "high")
-                }
+                ref={priorityRef}
                 required
+                defaultValue="medium"
               >
                 <option value="low">Low Priority</option>
                 <option value="medium">Medium Priority</option>
                 <option value="high">High Priority</option>
               </select>
-              <input
-                type="text"
-                className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="Assigned To"
-                value={assignedTo}
-                onChange={(e) => setAssignedTo(e.target.value)}
-              />
+
               <button
                 type="submit"
                 className="bg-blue-600 text-white rounded px-4 py-2 hover:bg-blue-700 transition"
               >
-                Add Task
+                Add
               </button>
             </form>
           </div>

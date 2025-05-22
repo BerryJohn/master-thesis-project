@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import AddTask from "./Main/AddTask";
+import { useState } from "react";
 
 const TopBar = ({ openAddTask }: { openAddTask(): void }) => {
   const [online, setOnline] = useState(false);
@@ -7,13 +6,11 @@ const TopBar = ({ openAddTask }: { openAddTask(): void }) => {
   return (
     <header className="w-full bg-white/80 backdrop-blur-md border-b border-gray-200 fixed top-0 left-0 z-50 font-sans">
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-12">
-        {/* Logo / Brand */}
         <div className="flex items-center">
           <span className="text-base font-semibold text-gray-900 tracking-tight">
             UEK LocalFirst Kanban
           </span>
         </div>
-        {/* Profile / Actions */}
         <div className="flex items-center space-x-4">
           <button
             type="button"

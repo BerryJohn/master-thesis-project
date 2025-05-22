@@ -1,4 +1,3 @@
-import React from "react";
 import type { KanbanTask } from "../../db/db";
 import { useDrag, type DragSourceMonitor } from "react-dnd";
 
@@ -18,7 +17,7 @@ const priorityColors: Record<NonNullable<KanbanTask["priority"]>, string> = {
   high: "bg-red-100 text-red-700",
 };
 
-export const Task: React.FC<TaskProps> = ({ task }) => {
+export const Task = ({ task }: TaskProps) => {
   const [{ opacity }, drag] = useDrag(
     () => ({
       type: "task",
@@ -34,10 +33,32 @@ export const Task: React.FC<TaskProps> = ({ task }) => {
     <div
       ref={drag as any}
       style={{ opacity }}
-      className="rounded-lg shadow-md bg-white p-4 flex flex-col gap-2 border hover:shadow-lg transition-shadow"
+      className="rounded-lg shadow-md bg-white p-4 flex flex-col gap-3 border hover:shadow-lg transition-shadow"
     >
-      <div className="flex items-center justify-between">
-        <span className="font-semibold text-lg">{task.title}</span>
+      <div className="flex items-start justify-between">
+        <div className="flex flex-col gap-1">
+          <span className="font-semibold text-lg">{task.title}</span>
+          {task.description && (
+            <p className="text-gray-600 text-sm">{task.description}</p>
+          )}
+        </div>
+        <button
+          className="ml-2 px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+          onClick={() => {
+            // TODO: Implement edit logic
+            alert("Edit task feature coming soon!");
+          }}
+          title="Edit Task"
+        >
+          Edit
+        </button>
+      </div>
+      <div className="flex items-center justify-between mt-2">
+        <span
+          className={`text-xs px-2 py-1 rounded ${statusColors[task.status]}`}
+        >
+          {task.status.replace(/^\w/, (c) => c.toUpperCase())}
+        </span>
         {task.priority && (
           <span
             className={`text-xs px-2 py-1 rounded ${
@@ -47,21 +68,10 @@ export const Task: React.FC<TaskProps> = ({ task }) => {
             {task.priority.toUpperCase()}
           </span>
         )}
-      </div>
-      {task.description && (
-        <p className="text-gray-600 text-sm">{task.description}</p>
-      )}
-      <div className="flex items-center justify-between mt-2">
-        <span
-          className={`text-xs px-2 py-1 rounded ${statusColors[task.status]}`}
-        >
-          {task.status.replace(/^\w/, (c) => c.toUpperCase())}
+        <span className="text-xs text-gray-400">
+          Last update:{" "}
+          {task.lastUpdate ? new Date(task.lastUpdate).toLocaleString() : "N/A"}
         </span>
-        <div className="flex items-center gap-2">
-          {task.assignedTo && (
-            <span className="text-xs text-gray-500">👤 {task.assignedTo}</span>
-          )}
-        </div>
       </div>
     </div>
   );

@@ -1,28 +1,29 @@
-import { db, type KanbanTask } from "../../db/db";
+import { useDocument, type AutomergeUrl } from "@automerge/react";
+import { type KanbanTask, type Status, type TasksList } from "../../db/db";
 import Task from "./Task";
 import { useDrop } from "react-dnd";
 
-const Column = ({
-  tasks,
-  title,
-  status,
-}: {
+type ColumnProps = {
   tasks: KanbanTask[];
   title: string;
   status: "todo" | "in-progress" | "done";
-}) => {
-  const updateTaskStatus = async (
-    taskId: number,
-    newStatus: "todo" | "in-progress" | "done"
-  ) => {
-    try {
-      await db.tasks.update(taskId, { status: newStatus });
-    } catch (error) {
-      console.error(`Failed to update task ${taskId}: ${error}`);
-    }
+  docUrl: AutomergeUrl;
+};
+
+const Column = ({ tasks, title, status, docUrl }: ColumnProps) => {
+  const [, changeDoc] = useDocument<TasksList>(docUrl);
+
+  const updateTaskStatus = (taskId: number, newStatus: Status) => {
+    changeDoc((d) => {
+      const taskIndex = d.tasks.findIndex((task) => task.id === taskId);
+      if (taskIndex !== -1) {
+        d.tasks[taskIndex].status = newStatus;
+        d.tasks[taskIndex].lastUpdate = new Date();
+      }
+    });
   };
 
-  const [{ isOver }, drop] = useDrop(() => ({
+  const [, drop] = useDrop(() => ({
     accept: "task",
     drop: (droppedTodo: any) => {
       updateTaskStatus(droppedTodo.id, status);

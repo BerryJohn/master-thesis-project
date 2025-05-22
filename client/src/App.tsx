@@ -1,5 +1,4 @@
 import { Suspense, useState } from "react";
-import "./App.css";
 import Footer from "./components/Footer";
 import Kanban from "./components/Main/Kanban";
 import TopBar from "./components/TopBar";
@@ -33,7 +32,11 @@ const App = ({ docUrl }: { docUrl: AutomergeUrl }) => {
         </Suspense>
       </DndProvider>
       <Footer />
-      <AddTask isOpen={openAddTask} handleClose={handleCloseAddTask} />
+      <AddTask
+        isOpen={openAddTask}
+        handleClose={handleCloseAddTask}
+        docUrl={docUrl}
+      />
     </div>
   );
 };
