@@ -13,7 +13,6 @@ import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network
 
 export const repo = new Repo({
   storage: new IndexedDBStorageAdapter(),
-
   network: [new BrowserWebSocketClientAdapter("ws://localhost:3030")],
 });
 
